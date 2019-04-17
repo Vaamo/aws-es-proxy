@@ -20,7 +20,7 @@ import (
 	// log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws/signer/v4"
+	v4 "github.com/aws/aws-sdk-go/aws/signer/v4"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -226,7 +226,7 @@ func (p *proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if p.logtofile {
 
-		requestID, _ := uuid.NewV4()
+		requestID := uuid.NewV4()
 
 		reqStruct := &requestStruct{
 			Requestid:  requestID.String(),
@@ -266,6 +266,10 @@ func addHeaders(src, dest http.Header) {
 
 	if val, ok := src["Content-Type"]; ok {
 		dest.Add("Content-Type", val[0])
+	}
+
+	if val, ok := src["Accept"]; ok {
+		dest.Add("Accept", val[0])
 	}
 }
 
@@ -329,8 +333,8 @@ func main() {
 	}
 
 	if p.logtofile {
-		u1, _ := uuid.NewV4()
-		u2, _ := uuid.NewV4()
+		u1 := uuid.NewV4()
+		u2 := uuid.NewV4()
 		requestFname := fmt.Sprintf("request-%s.log", u1.String())
 		responseFname := fmt.Sprintf("response-%s.log", u2.String())
 
